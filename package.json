@@ -1,0 +1,14 @@
+{
+  "name": "ix-browser",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Headful Chrome automation for autonomous agents. Fully portable, no external dependencies beyond Node + Chrome.",
+  "scripts": {
+    "start": "node server.mjs",
+    "setup": "bash setup.sh"
+  },
+  "dependencies": {
+    "playwright-core": "^1.50.0",
+    "express": "^4.21.0"
+  }
+}
