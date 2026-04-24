@@ -312,6 +312,18 @@ async function cleanupMarkers(page) {
 const app = express();
 app.use(express.json());
 
+// TIME_WAIT mitigation: force server-initiated close so TIME_WAITs land on
+// the server's 18840 tuple instead of the client's ephemeral pool. Combined
+// with SO_LINGER=0 below (RST-close on connection end), this keeps heavy
+// automation loops (Selena PIV cycles, Finn browser ops) from saturating
+// the kernel's ephemeral port range. See memory/2026-04-23.md for the
+// incident that surfaced this — M3 hit 45K TIME_WAITs, kernel refused to
+// allocate source ports, selena-ui's runner became unreachable from itself.
+app.use((req, res, next) => {
+  res.setHeader('Connection', 'close');
+  next();
+});
+
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -625,13 +637,23 @@ setInterval(ensureConnection, 10000);
 // --- Start ---
 async function start() {
   await connectBrowser();
-  app.listen(PORT, '127.0.0.1', () => {
+  const server = app.listen(PORT, '127.0.0.1', () => {
     console.log(`[ix-browser] Server listening on http://127.0.0.1:${PORT}`);
     console.log(`[ix-browser] Home: ${IX_HOME}`);
     console.log(`[ix-browser] Chrome profile: ${PROFILE_DIR}`);
     console.log(`[ix-browser] Screenshots: ${SCREENSHOT_DIR}`);
     console.log(`[ix-browser] Chrome debug port: ${CHROME_DEBUG_PORT}`);
   });
+
+  // Pair with the `Connection: close` middleware above — server initiates
+  // FIN so TIME_WAITs accumulate on the server's 18840 tuple instead of the
+  // client's ephemeral pool. Heavy automation loops (Selena PIV, Finn
+  // browser ops) no longer saturate the kernel's ephemeral port range. See
+  // memory/2026-04-23.md for the M3 port-exhaustion incident that surfaced
+  // this.
+  server.on('connection', (socket) => { socket.setNoDelay(true); });
+  server.keepAliveTimeout = 5_000;
+  server.headersTimeout = 10_000;
 }
 
 start().catch(e => {
