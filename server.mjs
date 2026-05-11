@@ -313,12 +313,11 @@ const app = express();
 app.use(express.json());
 
 // TIME_WAIT mitigation: force server-initiated close so TIME_WAITs land on
-// the server's 18840 tuple instead of the client's ephemeral pool. Combined
-// with SO_LINGER=0 below (RST-close on connection end), this keeps heavy
-// automation loops (Selena PIV cycles, Finn browser ops) from saturating
-// the kernel's ephemeral port range. See memory/2026-04-23.md for the
-// incident that surfaced this — M3 hit 45K TIME_WAITs, kernel refused to
-// allocate source ports, selena-ui's runner became unreachable from itself.
+// the server's listen tuple instead of the client's ephemeral pool. Combined
+// with the socket settings below, this keeps heavy automation loops from
+// saturating the kernel's ephemeral port range. In production we saw 45K
+// TIME_WAITs accumulate on the client side and the kernel refuse to allocate
+// new source ports — moving them server-side fixed it.
 app.use((req, res, next) => {
   res.setHeader('Connection', 'close');
   next();
@@ -646,11 +645,9 @@ async function start() {
   });
 
   // Pair with the `Connection: close` middleware above — server initiates
-  // FIN so TIME_WAITs accumulate on the server's 18840 tuple instead of the
-  // client's ephemeral pool. Heavy automation loops (Selena PIV, Finn
-  // browser ops) no longer saturate the kernel's ephemeral port range. See
-  // memory/2026-04-23.md for the M3 port-exhaustion incident that surfaced
-  // this.
+  // FIN so TIME_WAITs accumulate on the server's listen tuple instead of
+  // the client's ephemeral pool. Heavy automation loops no longer exhaust
+  // the kernel's ephemeral port range.
   server.on('connection', (socket) => { socket.setNoDelay(true); });
   server.keepAliveTimeout = 5_000;
   server.headersTimeout = 10_000;

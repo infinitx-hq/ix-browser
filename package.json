@@ -2,7 +2,23 @@
   "name": "ix-browser",
   "version": "2.0.0",
   "type": "module",
-  "description": "Headful Chrome automation for autonomous agents. Fully portable, no external dependencies beyond Node + Chrome.",
+  "description": "Headful Chrome automation for autonomous agents — real Chrome, persistent profile, no automation fingerprints. Built by INFINITX.",
+  "homepage": "https://github.com/Trejon-888/ix-browser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Trejon-888/ix-browser.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "browser-automation",
+    "playwright",
+    "chrome",
+    "cdp",
+    "ai-agents",
+    "claude-code",
+    "headful",
+    "autonomous-agents"
+  ],
   "scripts": {
     "start": "node server.mjs",
     "setup": "bash setup.sh"
