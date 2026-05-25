@@ -6,7 +6,7 @@ Give your AI agent a real browser. Real Chrome, real profile, real cookies, real
 
 Built by [INFINITX](https://infinitxai.com) to run the autonomous agents we ship to our customers. Open-sourced because every AI agent needs hands.
 
-> **Building autonomous businesses on Claude Code?** ix-browser is one of the open tools from INFINITX. We share the full playbook and the private toolkit inside the **AI Growth Collective** on Skool.
+> **Building autonomous businesses on Claude Code?** ix-browser is one of the open tools from INFINITX. We share the full playbook and the private toolkit inside the **AI Agents For Everything** on Skool.
 > **Join → https://www.skool.com/ai-growth-collective**
 
 ---
@@ -120,7 +120,7 @@ Page reads come back as markdown with interactive elements indexed inline (`[1] 
 
 ix-browser powers the autonomous agents we deploy for customers across sales, content, ops, and community work — every one of them needs hands on the web, and this is what we built. More on the platform at [infinitxai.com](https://infinitxai.com).
 
-Want to build this way yourself? Join the **AI Growth Collective** on Skool — the community and toolkit for building autonomous businesses on Claude Code: [skool.com/ai-growth-collective](https://www.skool.com/ai-growth-collective).
+Want to build this way yourself? Join the **AI Agents For Everything** on Skool — the community and toolkit for building autonomous businesses on Claude Code: [skool.com/ai-growth-collective](https://www.skool.com/ai-growth-collective).
 
 ## License
 
